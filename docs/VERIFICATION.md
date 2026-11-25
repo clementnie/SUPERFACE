@@ -1,4 +1,4 @@
-# Verification for SUPERFACE 1.0
+# SUPERFACE verification
 
 Measured on a Terasic DE1 EP2C20F484C7 and Orange Pi Zero 2W with a physical 3 Mbaud UART2 link. The archived build revision is `3e7a3daa1a28e74b76e1fa55694e47277c572d2b`. The public source is the same implementation with a cleaned history and release documentation.
 
@@ -38,3 +38,12 @@ The XGA RTL test checks every pixel of two frames with an 80-glyph external-SRAM
 The SOF was loaded through volatile JTAG and the existing Orange Pi service renegotiated Chinese mode with frame batching and acknowledged its first snapshot in 63.267 ms. The operator confirmed the monitor synchronized at 1024 × 768, the terminal retained its 80 × 30 geometry, and Colemak Caps Lock acted as Backspace. Chinese text, Unicode graphics and application responsiveness passed the physical check. The Phase 8 results above apply to the independent 640 × 480 rollback release.
 
 The physical 3 Mbaud benchmark measured 16.66 ms for one changed cell, 16.48 ms for eight changed rows, 49.92 ms for all 2,400 cells, and 49.88 ms for a full clear. Four-row sparse updates sustained 60.01 coherent updates/s. CRC discard, duplicate replay and session continuation passed.
+
+
+The accepted Phase 8.1 SOF and EPCS4 image were sealed before publication.
+EPCS4 Program + Verify and the final independent Verify operation succeeded.
+The operator confirmed production deployment and physical standalone cold-boot
+acceptance, and subsequently reported the terminal operational after the
+Orange Pi Wi-Fi recovery reboot. Publication reused these exact artifacts;
+no engineering tests, programming operations or hardware changes were repeated.
+See [v1.1.0 provenance](RELEASE-v1.1.0.md) for the source and artifact identities.

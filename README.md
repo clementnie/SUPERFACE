@@ -28,21 +28,24 @@ UART2 uses `/dev/ttyS2`, a 48 MHz reference, 3,000,000 baud, 8N1, idle-high sign
 
 ## Display and performance
 
-SUPERFACE 1.1 was verified on a physical VGA monitor at 1024 × 768 at 60 Hz. Its 65 MHz Cyclone II PLL drives only VGA. The horizontal timing is 1024 active, 24 front porch, 136 sync and 160 back porch, for 1344 total. The vertical timing is 768 active, 3 front porch, 6 sync and 29 back porch, for 806 total. Both syncs are negative. The Phase 8 rollback release runs at 640 × 480. [Phase 8 rollback release](https://github.com/clementnie/SUPERFACE/releases/tag/v1.0.0)
+SUPERFACE 1.1 was verified on a physical VGA monitor at 1024 × 768 at nominal 60 Hz. Its 65 MHz Cyclone II PLL drives only VGA. The horizontal timing is 1024 active, 24 front porch, 136 sync and 160 back porch, for 1344 total. The vertical timing is 768 active, 3 front porch, 6 sync and 29 back porch, for 806 total. Both syncs are negative. The Phase 8 rollback release runs at 640 × 480. [Phase 8 rollback release](https://github.com/clementnie/SUPERFACE/releases/tag/v1.0.0)
 
 The centered 960 × 720 terminal has 32-pixel side margins, 24-pixel top and bottom margins, and 12 × 24 output pixels per cell. Each output coordinate maps to `floor(2 × offset / 3)` on its bitmap axis. It preserves the original 8 × 16 ASCII and terminal graphics, 12 × 12 Chinese bitmaps and two-cell Chinese layout, punctuation, and missing glyphs. The same nearest-neighbor sampling scales the cursor and boot screen. The Phase 8 U9 font image is compatible.
 
 A negotiated extension stages changed spans against a shadow grid. One VBlank operation publishes the entire staged image and cursor. Each staged row is validated and acknowledged promptly, and keyboard packets have their own reliable sequence space. The original protocol profile stays available for legacy firmware.
 
-| Physical UART workload | Original v1 | Phase 8 | Phase 8.1 |
-| --- | ---: | ---: | ---: |
-| One changed cell | 16.80 ms | 16.79 ms | 16.66 ms |
-| Eight short spans on separate rows | 134.26 ms | 16.68 ms | 16.48 ms |
-| Full 2,400-cell update | 503.92 ms | 50.34 ms | 49.92 ms |
-| Full clear | 503.91 ms | 50.29 ms | 49.88 ms |
-| Four-row sparse animation | 14.88 updates/s | 59.53 updates/s | 60.01 updates/s |
+| Benchmark | Result |
+| --- | ---: |
+| Single-cell visible ACK | 16.66 ms |
+| Multiline visible ACK | 16.48 ms |
+| Full-screen visible ACK | 49.92 ms |
+| Clear-screen visible ACK | 49.88 ms |
+| Sparse coherent updates | 60.01 Hz |
+| Original full-screen baseline | Approximately 504 ms |
 
-The physical measurements use a deterministic direct-wire peer and time the last visible-commit ACK for each workload. They include serial transfer, staging and VBlank. They exclude application execution and monitor response. A raw 7,200-byte screen takes at least 24 ms to serialize at 3 Mbaud. Run `python3 host/uart/benchmark.py --batch` with the service stopped and the development user granted temporary UART access. [Verification record](docs/VERIFICATION.md)
+The physical 3 Mbaud measurements time the final visible-commit ACK, including serial transfer, staging and VBlank. Multiline means eight short spans on separate rows; sparse means four changed rows per update. **60.01 Hz is the sparse update frequency, not an arbitrary full-screen frame rate.** A raw 7,200-byte screen alone takes at least 24 ms to serialize. Application execution and monitor response are excluded. [Verification record](docs/VERIFICATION.md)
+
+The sealed Cyclone II EP2C20F484C7 fit uses 5,197 / 18,752 logic elements (28%), 2,655 registers, 50 / 52 M4Ks, 148,128 / 239,616 memory bits (62%), 155 / 315 pins and 1 / 4 PLLs. Slow-model setup slack is +4.362 ns at 65 MHz, +6.212 ns at 50 MHz and +30.633 ns at 24 MHz; worst fast-model hold slack is +0.215 ns. Gray-pointer routes meet their 10 ns bounds. The inherited SW[0] lab clock warning remains. [Accepted release and timing evidence](docs/RELEASE-v1.1.0.md)
 
 ## Character coverage
 
@@ -56,7 +59,7 @@ The canonical map covers 95 printable ASCII characters, 6,727 Simplified Chinese
 4. With the service enabled and the DE1 configured, log in on VGA with the PS/2 keyboard. See the keyboard layout commands below.
 5. Run `sh host/service/verify-display` for a mixed-language, color and glyph check. Run `sh host/service/verify-display web` for the local UTF-8 ELinks fixture.
 
-Phase 8 passed a cold boot using EPCS4 on the DE1 and the 48 MHz UART2 boot default on the Orange Pi. The local terminal service starts and reconnects independently of SSH or Wi-Fi. The release includes the verified EPCS4 programming file and the [standalone setup and rollback instructions](host/service/README.md#standalone-boot). See the [verification record](docs/VERIFICATION.md) for the actual deployment status. The terminal has a fixed palette and character-cell graphics. Text shaping, bidirectional layout, emoji collections, and Chinese composition input are outside its scope.
+Phase 8.1 passed standalone cold boot using EPCS4 on the DE1 and the 48 MHz UART2 boot default on the Orange Pi. The local terminal service starts and reconnects independently of SSH or Wi-Fi. The release includes the verified EPCS4 programming file and the [standalone setup and rollback instructions](host/service/README.md#standalone-boot). See the [verification record](docs/VERIFICATION.md) for the actual deployment status. The terminal has a fixed palette and character-cell graphics. Text shaping, bidirectional layout, emoji collections, and Chinese composition input are outside its scope.
 
 ### Keyboard layout
 
@@ -72,6 +75,8 @@ superface-layout status
 
 Each layout change restarts `superface.service` and **terminates the current physical login session**. Use SSH or the UART0 console when you need the command session to stay open.
 
-## Licensing
+## Release and licensing
 
-Original SUPERFACE code and documentation use the [MIT License](LICENSE). Quartus-generated IP collateral retains its vendor notices, and contributed lab assets retain their original terms. The released ARM64 executable includes [libvterm under MIT](host/deps/libvterm-LICENSE.txt). The converted Fusion Pixel artwork and upstream font notices are under their [respective font licenses](assets/fonts/LICENSES).
+Download the exact accepted SOF, EPCS4 image, ARM64 package, font and mapping from [v1.1.0](https://github.com/clementnie/SUPERFACE/releases/tag/v1.1.0), and verify `SHA256SUMS`. The ARM64 package includes the matching service installer and layout utility; the source archive includes deployment and Flash tools. [Release provenance](docs/RELEASE-v1.1.0.md) records the accepted build revision and artifact identities. [v1.0.0](https://github.com/clementnie/SUPERFACE/releases/tag/v1.0.0) remains the independently verified 640 × 480 rollback release.
+
+Original project code and documentation use [GPL-2.0-only](LICENSE). Prior MIT grants, vendor IP terms, libvterm's MIT notice and all upstream font licenses remain intact. See [licensing scope and third-party notices](LICENSING.md).
