@@ -34,15 +34,15 @@ The centered 960 × 720 terminal has 32-pixel side margins, 24-pixel top and bot
 
 A negotiated extension stages changed spans against a shadow grid. One VBlank operation publishes the entire staged image and cursor. Each staged row is validated and acknowledged promptly, and keyboard packets have their own reliable sequence space. The original protocol profile stays available for legacy firmware.
 
-| Physical UART workload | Original v1 | Phase 8 |
-| --- | ---: | ---: |
-| One changed cell | 16.80 ms | 16.79 ms |
-| Eight short spans on separate rows | 134.26 ms | 16.68 ms |
-| Full 2,400-cell update | 503.92 ms | 50.34 ms |
-| Full clear | 503.91 ms | 50.29 ms |
-| Four-row sparse animation | 14.88 updates/s | 59.53 updates/s |
+| Physical UART workload | Original v1 | Phase 8 | Phase 8.1 |
+| --- | ---: | ---: | ---: |
+| One changed cell | 16.80 ms | 16.79 ms | 16.66 ms |
+| Eight short spans on separate rows | 134.26 ms | 16.68 ms | 16.48 ms |
+| Full 2,400-cell update | 503.92 ms | 50.34 ms | 49.92 ms |
+| Full clear | 503.91 ms | 50.29 ms | 49.88 ms |
+| Four-row sparse animation | 14.88 updates/s | 59.53 updates/s | 60.01 updates/s |
 
-The historical Phase 8 measurements use a deterministic direct-wire peer and time the last visible-commit ACK for each workload. They include serial transfer, staging and VBlank. They exclude application execution and monitor response. A raw 7,200-byte screen takes at least 24 ms to serialize at 3 Mbaud. Run `python3 host/uart/benchmark.py --batch` with the service stopped and the development user granted temporary UART access. [Verification record](docs/VERIFICATION.md)
+The physical measurements use a deterministic direct-wire peer and time the last visible-commit ACK for each workload. They include serial transfer, staging and VBlank. They exclude application execution and monitor response. A raw 7,200-byte screen takes at least 24 ms to serialize at 3 Mbaud. Run `python3 host/uart/benchmark.py --batch` with the service stopped and the development user granted temporary UART access. [Verification record](docs/VERIFICATION.md)
 
 ## Character coverage
 
