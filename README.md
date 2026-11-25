@@ -57,5 +57,3 @@ The production system passed a cold boot using EPCS4 on the DE1 and the 48 MHz U
 ## Licensing and authorship
 
 Original SUPERFACE code and documentation use the [MIT License](LICENSE). Quartus-generated IP collateral retains its vendor notices, and contributed lab assets retain their original terms. The released ARM64 executable includes [libvterm under MIT](host/deps/libvterm-LICENSE.txt). The converted Fusion Pixel artwork and upstream font notices are under their [respective font licenses](assets/fonts/LICENSES).
-
-The human creator directed the project, established its goals and requirements, performed physical integration and acceptance, and used OpenAI Codex extensively for implementation, testing, and debugging.
