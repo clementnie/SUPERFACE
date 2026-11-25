@@ -1,0 +1,317 @@
+/*
+WARNING: Do NOT edit the input and output ports in this file in a text
+editor if you plan to continue editing the block that represents it in
+the Block Editor! File corruption is VERY likely to occur.
+*/
+/*
+Copyright (C) 1991-2013 Altera Corporation
+Your use of Altera Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Altera Program License 
+Subscription Agreement, Altera MegaCore Function License 
+Agreement, or other applicable license agreement, including, 
+without limitation, that your use is for the sole purpose of 
+programming logic devices manufactured by Altera and sold by 
+Altera or its authorized distributors.  Please refer to the 
+applicable agreement for further details.
+*/
+//#pragma file_not_in_maxplusii_format
+(header "graphic" (version "1.4"))
+(text "DE1 button input - synchronizer and one-cycle press pulse" (rect 32 32 431 45)(font "Arial" (font_size 11)))
+(pin
+	(input)
+	(rect 24 80 192 96)
+	(text "INPUT" (rect 133 0 162 10)(font "Arial" (font_size 6)))
+	(text "Key_N" (rect 9 0 44 11)(font "Arial" ))
+	(pt 168 8)
+	(drawing
+		(line (pt 92 12)(pt 117 12))
+		(line (pt 92 4)(pt 117 4))
+		(line (pt 121 8)(pt 168 8))
+		(line (pt 92 12)(pt 92 4))
+		(line (pt 117 4)(pt 121 8))
+		(line (pt 117 12)(pt 121 8))
+	)
+	(text "VCC" (rect 136 7 157 17)(font "Arial" (font_size 6)))
+)
+(connector
+	(text "Key_N" (rect 198 72 233 85)(font "Arial"))
+	(pt 192 88)
+	(pt 324 88)
+)
+(pin
+	(input)
+	(rect 24 120 192 136)
+	(text "INPUT" (rect 133 0 162 10)(font "Arial" (font_size 6)))
+	(text "Write_Clock" (rect 9 0 86 11)(font "Arial" ))
+	(pt 168 8)
+	(drawing
+		(line (pt 92 12)(pt 117 12))
+		(line (pt 92 4)(pt 117 4))
+		(line (pt 121 8)(pt 168 8))
+		(line (pt 92 12)(pt 92 4))
+		(line (pt 117 4)(pt 121 8))
+		(line (pt 117 12)(pt 121 8))
+	)
+	(text "VCC" (rect 136 7 157 17)(font "Arial" (font_size 6)))
+)
+(connector
+	(text "Write_Clock" (rect 198 112 275 125)(font "Arial"))
+	(pt 192 128)
+	(pt 324 128)
+)
+(symbol
+	(rect 160 200 208 232)
+	(text "NOT" (rect 1 0 22 10)(font "Arial" (font_size 6)))
+	(text "Active_High" (rect 3 21 77 32)(font "Arial" ))
+	(port
+		(pt 0 16)
+		(input)
+		(text "IN" (rect 2 7 17 18)(font "Courier New" (bold))(invisible))
+		(text "IN" (rect 2 7 17 18)(font "Courier New" (bold))(invisible))
+		(line (pt 0 16)(pt 13 16))
+	)
+	(port
+		(pt 48 16)
+		(output)
+		(text "OUT" (rect 32 7 53 18)(font "Courier New" (bold))(invisible))
+		(text "OUT" (rect 32 7 53 18)(font "Courier New" (bold))(invisible))
+		(line (pt 39 16)(pt 48 16))
+	)
+	(drawing
+		(line (pt 13 25)(pt 13 7))
+		(line (pt 13 7)(pt 31 16))
+		(line (pt 13 25)(pt 31 16))
+		(circle (rect 31 12 39 20))
+	)
+)
+(connector
+	(text "Key_N" (rect 46 200 81 213)(font "Arial"))
+	(pt 40 216)
+	(pt 160 216)
+)
+(connector
+	(text "Pressed_Raw" (rect 214 200 291 213)(font "Arial"))
+	(pt 208 216)
+	(pt 312 216)
+)
+(symbol
+	(rect 448 176 592 296)
+	(text "LPM_FF" (rect 18 0 60 13)(font "Arial" (font_size 10)))
+	(text "Key_Meta" (rect 8 104 64 117)(font "Arial" (font_size 8)))
+	(port (pt 0 40) (input)
+		(text "data" (rect 21 27 49 40)(font "Arial" (font_size 8)))
+		(text "data" (rect 21 27 49 40)(font "Arial" (font_size 8)))
+		(line (pt 0 40)(pt 16 40))
+	)
+	(port (pt 0 64) (input)
+		(text "clock" (rect 21 51 56 64)(font "Arial" (font_size 8)))
+		(text "clock" (rect 21 51 56 64)(font "Arial" (font_size 8)))
+		(line (pt 0 64)(pt 16 64))
+	)
+	(port (pt 144 56) (output)
+		(text "q" (rect 117 43 129 56)(font "Arial" (font_size 8)))
+		(text "q" (rect 117 43 129 56)(font "Arial" (font_size 8)))
+		(line (pt 144 56)(pt 128 56))
+	)
+	(parameter "LPM_WIDTH" "1" "")
+	(parameter "LPM_FFTYPE" "\"DFF\"" "")
+	(drawing (rectangle (rect 16 16 128 104)))
+)
+(connector
+	(text "Pressed_Raw" (rect 314 200 391 213)(font "Arial"))
+	(pt 308 216)
+	(pt 448 216)
+)
+(connector
+	(text "Write_Clock" (rect 314 224 391 237)(font "Arial"))
+	(pt 308 240)
+	(pt 448 240)
+)
+(connector
+	(text "Key_Meta_Q" (rect 598 216 668 229)(font "Arial"))
+	(pt 732 232)
+	(pt 592 232)
+)
+(symbol
+	(rect 816 176 960 296)
+	(text "LPM_FF" (rect 18 0 60 13)(font "Arial" (font_size 10)))
+	(text "Key_Sync" (rect 8 104 64 117)(font "Arial" (font_size 8)))
+	(port (pt 0 40) (input)
+		(text "data" (rect 21 27 49 40)(font "Arial" (font_size 8)))
+		(text "data" (rect 21 27 49 40)(font "Arial" (font_size 8)))
+		(line (pt 0 40)(pt 16 40))
+	)
+	(port (pt 0 64) (input)
+		(text "clock" (rect 21 51 56 64)(font "Arial" (font_size 8)))
+		(text "clock" (rect 21 51 56 64)(font "Arial" (font_size 8)))
+		(line (pt 0 64)(pt 16 64))
+	)
+	(port (pt 144 56) (output)
+		(text "q" (rect 117 43 129 56)(font "Arial" (font_size 8)))
+		(text "q" (rect 117 43 129 56)(font "Arial" (font_size 8)))
+		(line (pt 144 56)(pt 128 56))
+	)
+	(parameter "LPM_WIDTH" "1" "")
+	(parameter "LPM_FFTYPE" "\"DFF\"" "")
+	(drawing (rectangle (rect 16 16 128 104)))
+)
+(connector
+	(text "Key_Meta_Q" (rect 682 200 752 213)(font "Arial"))
+	(pt 676 216)
+	(pt 816 216)
+)
+(connector
+	(text "Write_Clock" (rect 682 224 759 237)(font "Arial"))
+	(pt 676 240)
+	(pt 816 240)
+)
+(connector
+	(text "Key_Sync_Q" (rect 966 216 1036 229)(font "Arial"))
+	(pt 1100 232)
+	(pt 960 232)
+)
+(symbol
+	(rect 448 360 592 480)
+	(text "LPM_FF" (rect 18 0 60 13)(font "Arial" (font_size 10)))
+	(text "Key_Previous" (rect 8 104 92 117)(font "Arial" (font_size 8)))
+	(port (pt 0 40) (input)
+		(text "data" (rect 21 27 49 40)(font "Arial" (font_size 8)))
+		(text "data" (rect 21 27 49 40)(font "Arial" (font_size 8)))
+		(line (pt 0 40)(pt 16 40))
+	)
+	(port (pt 0 64) (input)
+		(text "clock" (rect 21 51 56 64)(font "Arial" (font_size 8)))
+		(text "clock" (rect 21 51 56 64)(font "Arial" (font_size 8)))
+		(line (pt 0 64)(pt 16 64))
+	)
+	(port (pt 144 56) (output)
+		(text "q" (rect 117 43 129 56)(font "Arial" (font_size 8)))
+		(text "q" (rect 117 43 129 56)(font "Arial" (font_size 8)))
+		(line (pt 144 56)(pt 128 56))
+	)
+	(parameter "LPM_WIDTH" "1" "")
+	(parameter "LPM_FFTYPE" "\"DFF\"" "")
+	(drawing (rectangle (rect 16 16 128 104)))
+)
+(connector
+	(text "Key_Sync_Q" (rect 314 384 384 397)(font "Arial"))
+	(pt 308 400)
+	(pt 448 400)
+)
+(connector
+	(text "Write_Clock" (rect 314 408 391 421)(font "Arial"))
+	(pt 308 424)
+	(pt 448 424)
+)
+(connector
+	(text "Key_Prev_Q" (rect 598 400 668 413)(font "Arial"))
+	(pt 732 416)
+	(pt 592 416)
+)
+(symbol
+	(rect 816 408 864 440)
+	(text "NOT" (rect 1 0 22 10)(font "Arial" (font_size 6)))
+	(text "Invert_Prev" (rect 3 21 77 32)(font "Arial" ))
+	(port
+		(pt 0 16)
+		(input)
+		(text "IN" (rect 2 7 17 18)(font "Courier New" (bold))(invisible))
+		(text "IN" (rect 2 7 17 18)(font "Courier New" (bold))(invisible))
+		(line (pt 0 16)(pt 13 16))
+	)
+	(port
+		(pt 48 16)
+		(output)
+		(text "OUT" (rect 32 7 53 18)(font "Courier New" (bold))(invisible))
+		(text "OUT" (rect 32 7 53 18)(font "Courier New" (bold))(invisible))
+		(line (pt 39 16)(pt 48 16))
+	)
+	(drawing
+		(line (pt 13 25)(pt 13 7))
+		(line (pt 13 7)(pt 31 16))
+		(line (pt 13 25)(pt 31 16))
+		(circle (rect 31 12 39 20))
+	)
+)
+(connector
+	(text "Key_Prev_Q" (rect 702 408 772 421)(font "Arial"))
+	(pt 696 424)
+	(pt 816 424)
+)
+(connector
+	(text "Was_Released" (rect 870 408 954 421)(font "Arial"))
+	(pt 864 424)
+	(pt 968 424)
+)
+(symbol
+	(rect 448 528 512 576)
+	(text "AND2" (rect 1 0 29 10)(font "Arial" (font_size 6)))
+	(text "Press_Only" (rect 3 37 70 48)(font "Arial" ))
+	(port
+		(pt 0 16)
+		(input)
+		(text "IN1" (rect 2 7 22 18)(font "Courier New" (bold))(invisible))
+		(text "IN1" (rect 2 7 22 18)(font "Courier New" (bold))(invisible))
+		(line (pt 0 16)(pt 14 16))
+	)
+	(port
+		(pt 0 32)
+		(input)
+		(text "IN2" (rect 2 23 22 34)(font "Courier New" (bold))(invisible))
+		(text "IN2" (rect 2 23 22 34)(font "Courier New" (bold))(invisible))
+		(line (pt 0 32)(pt 14 32))
+	)
+	(port
+		(pt 64 24)
+		(output)
+		(text "OUT" (rect 48 15 69 26)(font "Courier New" (bold))(invisible))
+		(text "OUT" (rect 48 15 69 26)(font "Courier New" (bold))(invisible))
+		(line (pt 42 24)(pt 64 24))
+	)
+	(drawing
+		(line (pt 14 12)(pt 30 12))
+		(line (pt 14 37)(pt 31 37))
+		(line (pt 14 12)(pt 14 37))
+		(arc (pt 31 37)(pt 30 12)(rect 18 12 43 37))
+	)
+)
+(connector
+	(text "Key_Sync_Q" (rect 326 528 396 541)(font "Arial"))
+	(pt 320 544)
+	(pt 448 544)
+)
+(connector
+	(text "Was_Released" (rect 326 544 410 557)(font "Arial"))
+	(pt 320 560)
+	(pt 448 560)
+)
+(connector
+	(text "Press" (rect 518 536 553 549)(font "Arial"))
+	(pt 512 552)
+	(pt 624 552)
+)
+(pin
+	(output)
+	(rect 858 536 1034 552)
+	(text "OUTPUT" (rect 1 0 41 10)(font "Arial" (font_size 6)))
+	(text "Press" (rect 90 0 125 11)(font "Arial" ))
+	(pt 0 8)
+	(drawing
+		(line (pt 0 8)(pt 52 8))
+		(line (pt 52 4)(pt 78 4))
+		(line (pt 52 12)(pt 78 12))
+		(line (pt 52 12)(pt 52 4))
+		(line (pt 78 4)(pt 82 8))
+		(line (pt 82 8)(pt 78 12))
+		(line (pt 78 12)(pt 82 8))
+	)
+)
+(connector
+	(text "Press" (rect 732 528 767 541)(font "Arial"))
+	(pt 858 544)
+	(pt 726 544)
+)

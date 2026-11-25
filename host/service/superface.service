@@ -1,0 +1,26 @@
+[Unit]
+Description=SUPERFACE authenticated physical UART terminal
+Requires=dev-ttyS2.device
+After=dev-ttyS2.device systemd-user-sessions.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+# The existing launcher forks login(1), then permanently drops the renderer to
+# the dedicated superface UID/GID. User=superface here would break PAM login.
+User=root
+ExecStartPre=/bin/sh /opt/superface/bin/check-uart
+ExecStart=/opt/superface/bin/superface --login --keyboard colemak --uart /dev/ttyS2
+SuccessExitStatus=143
+Restart=always
+RestartSec=2
+KillMode=control-group
+TimeoutStopSec=5
+LimitCORE=0
+UMask=0077
+StandardInput=null
+StandardOutput=null
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

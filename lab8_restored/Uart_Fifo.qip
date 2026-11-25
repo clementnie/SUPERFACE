@@ -1,0 +1,2 @@
+# Cyclone II Quartus DCFIFO IP collateral.
+set_global_assignment -name VHDL_FILE [file join $::quartus(qip_path) Uart_Fifo.vhd]

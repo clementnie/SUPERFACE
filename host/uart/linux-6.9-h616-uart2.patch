@@ -1,0 +1,44 @@
+--- a/drivers/tty/serial/8250/8250_dw.c
++++ b/drivers/tty/serial/8250/8250_dw.c
+@@ -55,6 +55,7 @@
+ #define DW_UART_QUIRK_SKIP_SET_RATE	BIT(2)
+ #define DW_UART_QUIRK_IS_DMA_FC		BIT(3)
+ #define DW_UART_QUIRK_APMC0D08		BIT(4)
++#define DW_UART_QUIRK_H616		BIT(5)
+ 
+ static inline struct dw8250_data *clk_to_dw8250_data(struct notifier_block *nb)
+ {
+@@ -609,6 +610,19 @@
+ 
+ 	dw8250_quirks(p, data);
+ 
++	if (data->pdata && (data->pdata->quirks & DW_UART_QUIRK_H616)) {
++		/*
++		 * The H616 has a fixed 256-byte FIFO and integer divisors.
++		 * Optional DesignWare feature registers overlap H616 registers.
++		 */
++		data->skip_autocfg = true;
++		p->type = PORT_16550A;
++		p->flags |= UPF_FIXED_TYPE | UPF_SKIP_TEST;
++		p->fifosize = 256;
++		up->tx_loadsz = 256;
++		up->capabilities = UART_CAP_FIFO;
++	}
++
+ 	/* If the Busy Functionality is not implemented, don't handle it */
+ 	if (data->uart_16550_compatible)
+ 		p->handle_irq = NULL;
+@@ -736,7 +750,13 @@
+ 	.quirks = DW_UART_QUIRK_SKIP_SET_RATE,
+ };
+ 
++static const struct dw8250_platform_data dw8250_h616_data = {
++	.usr_reg = DW_UART_USR,
++	.quirks = DW_UART_QUIRK_H616 | DW_UART_QUIRK_SKIP_SET_RATE,
++};
++
+ static const struct of_device_id dw8250_of_match[] = {
++	{ .compatible = "allwinner,sun50i-h616-uart", .data = &dw8250_h616_data },
+ 	{ .compatible = "snps,dw-apb-uart", .data = &dw8250_dw_apb },
+ 	{ .compatible = "cavium,octeon-3860-uart", .data = &dw8250_octeon_3860_data },
+ 	{ .compatible = "marvell,armada-38x-uart", .data = &dw8250_armada_38x_data },

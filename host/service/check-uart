@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+[ "$(/bin/sh /opt/superface/bin/find-tty)" = /dev/ttyS2 ]
+exec /opt/superface/bin/superface-uart --check /dev/ttyS2

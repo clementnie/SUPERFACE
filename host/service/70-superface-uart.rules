@@ -1,0 +1,2 @@
+# Match UART2's hardware ancestry; never alter UART0 debugging.
+SUBSYSTEM=="tty", KERNEL=="ttyS2", KERNELS=="5000800.serial", GROUP="superface", MODE="0660", TAG+="systemd"

@@ -1,0 +1,117 @@
+--- a/drivers/clk/sunxi-ng/ccu_mp.c
++++ b/drivers/clk/sunxi-ng/ccu_mp.c
+@@ -183,8 +183,8 @@
+ 					     req, ccu_mp_round_rate, cmp);
+ }
+ 
+-static int ccu_mp_set_rate(struct clk_hw *hw, unsigned long rate,
+-			   unsigned long parent_rate)
++static int ccu_mp_program_rate(struct clk_hw *hw, unsigned long rate,
++			       unsigned long parent_rate, int index)
+ {
+ 	struct ccu_mp *cmp = hw_to_ccu_mp(hw);
+ 	unsigned long flags;
+@@ -193,7 +193,7 @@
+ 	u32 reg;
+ 
+ 	/* Adjust parent_rate according to pre-dividers */
+-	parent_rate = ccu_mux_helper_apply_prediv(&cmp->common, &cmp->mux, -1,
++	parent_rate = ccu_mux_helper_apply_prediv(&cmp->common, &cmp->mux, index,
+ 						  parent_rate);
+ 
+ 	max_m = cmp->m.max ?: 1 << cmp->m.width;
+@@ -203,7 +203,8 @@
+ 	if (cmp->common.features & CCU_FEATURE_FIXED_POSTDIV)
+ 		rate = rate * cmp->fixed_post_div;
+ 
+-	ccu_mp_find_best(parent_rate, rate, max_m, max_p, &m, &p);
++	if (!ccu_mp_find_best(parent_rate, rate, max_m, max_p, &m, &p))
++		return -EINVAL;
+ 
+ 	spin_lock_irqsave(cmp->common.lock, flags);
+ 
+@@ -212,6 +213,13 @@
+ 	reg &= ~GENMASK(cmp->p.width + cmp->p.shift - 1, cmp->p.shift);
+ 	reg |= (m - cmp->m.offset) << cmp->m.shift;
+ 	reg |= ilog2(p) << cmp->p.shift;
++	if (index >= 0) {
++		u8 raw = cmp->mux.table ? cmp->mux.table[index] : index;
++
++		reg &= ~GENMASK(cmp->mux.shift + cmp->mux.width - 1,
++				cmp->mux.shift);
++		reg |= raw << cmp->mux.shift;
++	}
+ 
+ 	writel(reg, cmp->common.base + cmp->common.reg);
+ 
+@@ -220,6 +228,18 @@
+ 	return 0;
+ }
+ 
++static int ccu_mp_set_rate(struct clk_hw *hw, unsigned long rate,
++			   unsigned long parent_rate)
++{
++	return ccu_mp_program_rate(hw, rate, parent_rate, -1);
++}
++
++static int ccu_mp_set_rate_and_parent(struct clk_hw *hw, unsigned long rate,
++				      unsigned long parent_rate, u8 index)
++{
++	return ccu_mp_program_rate(hw, rate, parent_rate, index);
++}
++
+ static u8 ccu_mp_get_parent(struct clk_hw *hw)
+ {
+ 	struct ccu_mp *cmp = hw_to_ccu_mp(hw);
+@@ -248,6 +268,17 @@
+ };
+ EXPORT_SYMBOL_NS_GPL(ccu_mp_ops, SUNXI_CCU);
+ 
++/* Select this only when the mux and both dividers share one register. */
++const struct clk_ops ccu_mp_atomic_ops = {
++	.get_parent		= ccu_mp_get_parent,
++	.set_parent		= ccu_mp_set_parent,
++	.determine_rate		= ccu_mp_determine_rate,
++	.recalc_rate		= ccu_mp_recalc_rate,
++	.set_rate		= ccu_mp_set_rate,
++	.set_rate_and_parent	= ccu_mp_set_rate_and_parent,
++};
++EXPORT_SYMBOL_NS_GPL(ccu_mp_atomic_ops, SUNXI_CCU);
++
+ /*
+  * Support for MMC timing mode switching
+  *
+--- a/drivers/clk/sunxi-ng/ccu_mp.h
++++ b/drivers/clk/sunxi-ng/ccu_mp.h
+@@ -139,6 +139,7 @@
+ }
+ 
+ extern const struct clk_ops ccu_mp_ops;
++extern const struct clk_ops ccu_mp_atomic_ops;
+ 
+ /*
+  * Special class of M-P clock that supports MMC timing modes
+--- a/drivers/clk/sunxi-ng/ccu-sun50i-h616.c
++++ b/drivers/clk/sunxi-ng/ccu-sun50i-h616.c
+@@ -268,11 +268,16 @@
+ 			     24, 2,	/* mux */
+ 			     0);
+ 
+-static SUNXI_CCU_MP_WITH_MUX(apb2_clk, "apb2", ahb3_apb1_apb2_parents, 0x524,
+-			     0, 2,	/* M */
+-			     8, 2,	/* P */
+-			     24, 2,	/* mux */
+-			     0);
++static struct ccu_mp apb2_clk = {
++	.m	= _SUNXI_CCU_DIV(0, 2),
++	.p	= _SUNXI_CCU_DIV(8, 2),
++	.mux	= _SUNXI_CCU_MUX(24, 2),
++	.common	= {
++		.reg = 0x524,
++		.hw.init = CLK_HW_INIT_PARENTS("apb2", ahb3_apb1_apb2_parents,
++					      &ccu_mp_atomic_ops, 0),
++	},
++};
+ 
+ static const char * const mbus_parents[] = { "osc24M", "pll-periph0-2x",
+ 					     "pll-ddr0", "pll-ddr1" };

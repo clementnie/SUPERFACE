@@ -1,0 +1,5 @@
+superface|SUPERFACE 80 by 30 sixteen-color terminal,
+    cols#80, lines#30,
+    ccc@, initc@, mc0@, mc4@, mc5@, mc5i@,
+    flash@, dim@, rev=\E[7m,
+    use=xterm-16color,

@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+lab8_restored/db/
+lab8_restored/incremental_db/
+lab8_restored/output_files/
+*.qws
+*.sof
+*.pof
+*.log
+core

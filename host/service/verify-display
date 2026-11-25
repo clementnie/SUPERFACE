@@ -1,0 +1,20 @@
+#!/bin/sh
+# Run at the physical terminal after authenticating.
+set -eu
+case "${1:-glyphs}" in
+    glyphs)
+        printf '\033[2J\033[H%s\n'             'SUPERFACE 中文终端：你好，世界！【全角】％＋＝'             '┌─────────┬─────────┐   ╔═══╗  ← ↑ → ↓ ± × ÷ ° µ € ≥'             '│ ⠁⠃⠇⣿   │ ░▒▓█▁▃▅▇│   ║ ◇ ║  ○ ● □ ■ ▲ ▼'             '└─────────┴─────────┘   ╚═══╝  ? ☃ 😀'
+        for color in 30 31 32 33 34 35 36 37 90 91 92 93 94 95 96 97; do
+            printf '\033[%sm■\033[0m ' "$color"
+        done
+        printf '\nTERM=%s, geometry ' "${TERM:-}"
+        stty size
+        ;;
+    web)
+        page=$(mktemp)
+        trap 'rm -f -- "$page"' EXIT HUP INT TERM
+        printf '<!doctype html><meta charset="UTF-8"><title>SUPERFACE</title><h1>简体中文网页</h1><p>你好，世界！中文标点与全角符号：【测试】％＋＝。</p>\n' > "$page"
+        elinks -force-html "$page"
+        ;;
+    *) exit 2 ;;
+esac

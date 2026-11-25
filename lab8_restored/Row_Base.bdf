@@ -1,0 +1,184 @@
+/*
+WARNING: Do NOT edit the input and output ports in this file in a text
+editor if you plan to continue editing the block that represents it in
+the Block Editor! File corruption is VERY likely to occur.
+*/
+/*
+Copyright (C) 1991-2013 Altera Corporation
+Your use of Altera Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Altera Program License 
+Subscription Agreement, Altera MegaCore Function License 
+Agreement, or other applicable license agreement, including, 
+without limitation, that your use is for the sole purpose of 
+programming logic devices manufactured by Altera and sold by 
+Altera or its authorized distributors.  Please refer to the 
+applicable agreement for further details.
+*/
+//#pragma file_not_in_maxplusii_format
+(header "graphic" (version "1.4"))
+(text "24-bit screen address origin, row times 80" (rect 32 24 326 37)(font "Arial" (font_size 13)))
+(pin
+	(input)
+	(rect 32 72 200 88)
+	(text "INPUT" (rect 133 0 162 10)(font "Arial" (font_size 6)))
+	(text "Row[4..0]" (rect 9 0 72 11)(font "Arial" ))
+	(pt 168 8)
+	(drawing
+		(line (pt 92 12)(pt 117 12))
+		(line (pt 92 4)(pt 117 4))
+		(line (pt 121 8)(pt 168 8))
+		(line (pt 92 12)(pt 92 4))
+		(line (pt 117 4)(pt 121 8))
+		(line (pt 117 12)(pt 121 8))
+	)
+	(text "VCC" (rect 136 7 157 17)(font "Arial" (font_size 6)))
+)
+(connector
+	(text "Row[4..0]" (rect 206 64 269 77)(font "Arial"))
+	(pt 200 80)
+	(pt 432 80)
+	(bus)
+)
+(symbol
+	(rect 296 400 560 512)
+	(text "LPM_CONSTANT" (rect 18 0 102 13)(font "Arial" (font_size 10)))
+	(text "U_K1_0" (rect 8 96 50 109)(font "Arial" (font_size 8)))
+	(port (pt 264 36) (output)
+		(text "result" (rect 207 23 249 36)(font "Arial" (font_size 8)))
+		(text "result" (rect 207 23 249 36)(font "Arial" (font_size 8)))
+		(line (pt 264 36)(pt 248 36))
+	)
+	(parameter "LPM_WIDTH" "1" "")
+	(parameter "LPM_CVALUE" "0" "")
+	(drawing (rectangle (rect 16 16 248 96)))
+)
+(connector
+	(text "K1_0" (rect 566 420 594 433)(font "Arial"))
+	(pt 832 436)
+	(pt 560 436)
+)
+(symbol
+	(rect 1176 400 1440 512)
+	(text "LPM_CONSTANT" (rect 18 0 102 13)(font "Arial" (font_size 10)))
+	(text "U_K2_0" (rect 8 96 50 109)(font "Arial" (font_size 8)))
+	(port (pt 264 36) (output)
+		(text "result[1..0]" (rect 171 23 255 36)(font "Arial" (font_size 8)))
+		(text "result[1..0]" (rect 171 23 255 36)(font "Arial" (font_size 8)))
+		(line (pt 264 36)(pt 248 36) (line_width 3))
+	)
+	(parameter "LPM_WIDTH" "2" "")
+	(parameter "LPM_CVALUE" "0" "")
+	(drawing (rectangle (rect 16 16 248 96)))
+)
+(connector
+	(text "K2_0[1..0]" (rect 1446 420 1516 433)(font "Arial"))
+	(pt 1712 436)
+	(pt 1440 436)
+	(bus)
+)
+(symbol
+	(rect 2056 400 2320 512)
+	(text "LPM_CONSTANT" (rect 18 0 102 13)(font "Arial" (font_size 10)))
+	(text "U_K3_0" (rect 8 96 50 109)(font "Arial" (font_size 8)))
+	(port (pt 264 36) (output)
+		(text "result[2..0]" (rect 171 23 255 36)(font "Arial" (font_size 8)))
+		(text "result[2..0]" (rect 171 23 255 36)(font "Arial" (font_size 8)))
+		(line (pt 264 36)(pt 248 36) (line_width 3))
+	)
+	(parameter "LPM_WIDTH" "3" "")
+	(parameter "LPM_CVALUE" "0" "")
+	(drawing (rectangle (rect 16 16 248 96)))
+)
+(connector
+	(text "K3_0[2..0]" (rect 2326 420 2396 433)(font "Arial"))
+	(pt 2592 436)
+	(pt 2320 436)
+	(bus)
+)
+(symbol
+	(rect 296 672 560 784)
+	(text "LPM_ADD_SUB" (rect 18 0 95 13)(font "Arial" (font_size 10)))
+	(text "U_RowTimes5" (rect 8 96 85 109)(font "Arial" (font_size 8)))
+	(port (pt 0 36) (input)
+		(text "dataa[7..0]" (rect 21 23 98 36)(font "Arial" (font_size 8)))
+		(text "dataa[7..0]" (rect 21 23 98 36)(font "Arial" (font_size 8)))
+		(line (pt 0 36)(pt 16 36) (line_width 3))
+	)
+	(port (pt 0 60) (input)
+		(text "datab[7..0]" (rect 21 47 98 60)(font "Arial" (font_size 8)))
+		(text "datab[7..0]" (rect 21 47 98 60)(font "Arial" (font_size 8)))
+		(line (pt 0 60)(pt 16 60) (line_width 3))
+	)
+	(port (pt 264 36) (output)
+		(text "result[7..0]" (rect 171 23 255 36)(font "Arial" (font_size 8)))
+		(text "result[7..0]" (rect 171 23 255 36)(font "Arial" (font_size 8)))
+		(line (pt 264 36)(pt 248 36) (line_width 3))
+	)
+	(parameter "LPM_WIDTH" "8" "")
+	(parameter "LPM_DIRECTION" "\"ADD\"" "")
+	(parameter "LPM_REPRESENTATION" "\"UNSIGNED\"" "")
+	(drawing (rectangle (rect 16 16 248 96)))
+)
+(connector
+	(text "K1_0,Row[4..0],K2_0[1..0]" (rect 30 692 205 705)(font "Arial"))
+	(pt 24 708)
+	(pt 296 708)
+	(bus)
+)
+(connector
+	(text "K3_0[2..0],Row[4..0]" (rect 30 716 170 729)(font "Arial"))
+	(pt 24 732)
+	(pt 296 732)
+	(bus)
+)
+(connector
+	(text "RowTimes5[7..0]" (rect 566 692 671 705)(font "Arial"))
+	(pt 832 708)
+	(pt 560 708)
+	(bus)
+)
+(symbol
+	(rect 1176 672 1440 784)
+	(text "LPM_CONSTANT" (rect 18 0 102 13)(font "Arial" (font_size 10)))
+	(text "U_K4_0" (rect 8 96 50 109)(font "Arial" (font_size 8)))
+	(port (pt 264 36) (output)
+		(text "result[3..0]" (rect 171 23 255 36)(font "Arial" (font_size 8)))
+		(text "result[3..0]" (rect 171 23 255 36)(font "Arial" (font_size 8)))
+		(line (pt 264 36)(pt 248 36) (line_width 3))
+	)
+	(parameter "LPM_WIDTH" "4" "")
+	(parameter "LPM_CVALUE" "0" "")
+	(drawing (rectangle (rect 16 16 248 96)))
+)
+(connector
+	(text "K4_0[3..0]" (rect 1446 692 1516 705)(font "Arial"))
+	(pt 1712 708)
+	(pt 1440 708)
+	(bus)
+)
+(pin
+	(output)
+	(rect 330 984 506 1000)
+	(text "OUTPUT" (rect 1 0 41 10)(font "Arial" (font_size 6)))
+	(text "Base[11..0]" (rect 90 0 167 11)(font "Arial" ))
+	(pt 0 8)
+	(drawing
+		(line (pt 0 8)(pt 52 8))
+		(line (pt 52 4)(pt 78 4))
+		(line (pt 52 12)(pt 78 12))
+		(line (pt 52 12)(pt 52 4))
+		(line (pt 78 4)(pt 82 8))
+		(line (pt 82 8)(pt 78 12))
+		(line (pt 78 12)(pt 82 8))
+	)
+)
+(connector
+	(text "RowTimes5[7..0],K4_0[3..0]" (rect 64 976 246 989)(font "Arial"))
+	(pt 330 992)
+	(pt 58 992)
+	(bus)
+)

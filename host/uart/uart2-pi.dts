@@ -1,0 +1,26 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "xunlong,orangepi-zero2w";
+
+    fragment@0 {
+        target-path = "/soc/pinctrl@300b000";
+        __overlay__ {
+            superface_uart2: uart2-pi-superface-pins {
+                pins = "PI5", "PI6";
+                function = "uart2";
+                bias-pull-up;
+            };
+        };
+    };
+
+    fragment@1 {
+        target-path = "/soc/serial@5000800";
+        __overlay__ {
+            status = "okay";
+            pinctrl-names = "default";
+            pinctrl-0 = <&superface_uart2>;
+        };
+    };
+};
