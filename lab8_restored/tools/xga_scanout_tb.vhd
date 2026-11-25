@@ -116,7 +116,7 @@ begin
                     report "nearest-neighbor coordinate mismatch" severity failure;
                 expected := word(sy, c);
                 if sy / 16 = 5 and sy mod 16 >= 14 and c = 7 then
-                    expected(15 downto 8) := not expected(15 downto 8);
+                    expected(7 downto 0) := not expected(7 downto 0);
                 end if;
                 assert pixel_word = expected report "cache or cursor mismatch" severity failure;
             else

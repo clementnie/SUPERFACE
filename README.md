@@ -51,7 +51,7 @@ The canonical map covers 95 printable ASCII characters, 6,727 Simplified Chinese
 ## Build and run
 
 1. Use Quartus II 13.0 SP1 with Cyclone II support. Put `quartus_sh` on `PATH`, then run `sh lab8_restored/tools/build_phase5.sh /tmp/sf-board`. The script builds in a clean copy and produces `LAB8.sof`. Load it via the USB-Blaster in JTAG mode.
-2. Preserve the current complete U9 Flash contents and program the matching font image using the [PFL procedure](host/flash/README.md). The host and FPGA require the same mapping identity. They negotiate ASCII fallback if the font is unavailable or mismatched.
+2. On a fresh DE1, preserve the complete U9 Flash contents and program the matching font image using the [PFL procedure](host/flash/README.md). Existing Phase 8 installations can reuse their verified U9 font image. The host and FPGA require the same mapping identity. They negotiate ASCII fallback if the font is unavailable or mismatched.
 3. On the Orange Pi, run `sh host/deps/build-libvterm.sh`, then `make -C host check`. The dependency is pinned and built statically. Use the [service installation instructions](host/service/README.md) to install the checked executables, terminfo, systemd unit, and restricted UART udev rule.
 4. With the service enabled and the DE1 configured, log in on VGA with the PS/2 keyboard. See the keyboard layout commands below.
 5. Run `sh host/service/verify-display` for a mixed-language, color and glyph check. Run `sh host/service/verify-display web` for the local UTF-8 ELinks fixture.

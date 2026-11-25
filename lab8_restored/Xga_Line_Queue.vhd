@@ -44,7 +44,7 @@ begin
     wr_en <= build_we and rendering and not blank_sync and not reset;
     wr_addr <= std_logic_vector(wr_ptr(1 downto 0)) & build_col;
     -- The cursor and the committed image stay in the system clock domain.
-    wr_data <= (not build_data(15 downto 8)) & build_data(7 downto 0)
+    wr_data <= build_data(15 downto 8) & (not build_data(7 downto 0))
         when cursor_visible = '1' and target(8 downto 4) = unsigned(cursor_row) and
              target(3 downto 0) >= 14 and build_col = cursor_col else build_data;
 

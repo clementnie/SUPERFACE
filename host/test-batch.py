@@ -16,6 +16,7 @@ import os
 import sys
 import tty
 tty.setraw(0)
+os.write(1, b'\\x1b[?25l')
 expected = bytes.fromhex(sys.argv[1])
 first = sys.stdin.buffer.read(len(expected))
 assert first == expected, (first, expected)
@@ -40,9 +41,19 @@ def check(layout, expected_keys, second_key):
             snapshot(peer, begin=0x18)
             # Set 2 Caps Lock make, repeat, break, ordinary Backspace, and E.
             peer.send(0x20, session, 1, b"\x00\x58\x58\xf0\x58\x66\xf0\x66\x24")
-            assert peer.read() == (0x7f, session, 1, b"\x20\x00")
-            first = peer.read()
-            assert first[0] == 0x16 and first[3][:3] == bytes((0, 0, 7)), first
+            key_ack = (0x7f, session, 1, b"\x20\x00")
+            acked = False
+            for _ in range(4):
+                first = peer.read()
+                if first == key_ack:
+                    acked = True
+                elif first[0] == 0x17:
+                    # The cursor can blink between snapshot completion and key delivery.
+                    assert first[3][:2] == bytes(2), first
+                    peer.ack(first)
+                else:
+                    break
+            assert acked and first[0] == 0x16 and first[3][:3] == bytes((0, 0, 7)), first
             ids = [int.from_bytes(first[3][3+i:5+i], "little") for i in range(0, 21, 3)]
             assert ids[0] == expected_keys[-1] and ids[1] >= 0x9abc and ids[2] >= 0x9abc
             assert ids[3:] == [0x7f, 0x80, 0xffff, ord("?")], ids
