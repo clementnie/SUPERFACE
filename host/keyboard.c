@@ -74,7 +74,7 @@ static void key(Keyboard *k, VTerm *vt, unsigned code)
     k->held[ext][code] = !released;
     if (released)
         return;
-    if (!ext && code == 0x58) {
+    if (!ext && code == 0x58 && !k->colemak) {
         if (!held)
             k->caps = !k->caps;
         return;
@@ -92,6 +92,9 @@ static void key(Keyboard *k, VTerm *vt, unsigned code)
     if (k->held[0][0x11] || k->held[1][0x11])
         mod |= VTERM_MOD_ALT;
 
+    // Use the same key path for Colemak Caps Lock and physical Backspace.
+    if (k->colemak && !ext && code == 0x58)
+        code = 0x66;
     VTermKey symbol = ext ? extended[code] : plain[code];
     if (!ext && keypad[code]) {
         VTermKey pad = keypad[code];

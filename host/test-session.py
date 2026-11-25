@@ -20,7 +20,8 @@ import fcntl, os, struct, termios, time, tty
 assert os.isatty(0) and os.isatty(1) and os.isatty(2)
 assert os.getpid() == os.getsid(0) == os.tcgetpgrp(0)
 assert struct.unpack("HHHH", fcntl.ioctl(0, termios.TIOCGWINSZ, b"\0"*8))[:2] == (30, 80)
-assert os.environ["LC_ALL"] == "C.UTF-8" and os.environ["TERM"] == "xterm"
+expected_term = "superface" if os.access("/usr/share/terminfo/s/superface", os.R_OK) else "xterm"
+assert os.environ["LC_ALL"] == "C.UTF-8" and os.environ["TERM"] == expected_term
 tty.setraw(0)
 os.write(1, b"\x1b[?25l\x1b[4;2H\x1b[91;44mA\xe4")
 time.sleep(.035)

@@ -486,9 +486,6 @@ set_location_assignment PIN_W7 -to SRAM_UB_N
 set_location_assignment PIN_AA10 -to SRAM_WE_N
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name SIMULATION_MODE FUNCTIONAL
-set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
-set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
-set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST ON -section_id eda_simulation
 set_global_assignment -name VECTOR_OUTPUT_FORMAT VWF
 set_global_assignment -name BDF_FILE LAB8.bdf
 set_global_assignment -name VHDL_FILE Seven_Seg_Driver.vhd
@@ -570,3 +567,11 @@ set_global_assignment -name VHDL_FILE Grid_Commit.vhd
 
 set_global_assignment -name VHDL_FILE Cell_Classify.vhd
 set_global_assignment -name VHDL_FILE Font_Row_Select.vhd
+
+# XGA production scanout. Historical VGA sheets remain available to lab revisions.
+set_global_assignment -name QIP_FILE Vga_Clock.qip
+set_global_assignment -name BDF_FILE Xga_Display.bdf
+set_global_assignment -name VHDL_FILE Xga_Pixel_Sync.vhd
+set_global_assignment -name VHDL_FILE Xga_Raster.vhd
+set_global_assignment -name VHDL_FILE Xga_Line_Queue.vhd
+set_global_assignment -name VHDL_FILE Xga_Line_RAM.vhd

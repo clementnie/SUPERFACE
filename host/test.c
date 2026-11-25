@@ -141,6 +141,23 @@ static void keyboard_tests(void)
     KEYS(prefix, "");
     keyboard_reset(&keyboard);
     KEYS(a, "a");
+    keyboard.colemak = true;
+    keyboard_reset(&keyboard);
+    const uint8_t top[] = {0x15, 0x1d, 0x24, 0x2d, 0x2c, 0x35, 0x3c, 0x43, 0x44, 0x4d};
+    const uint8_t home[] = {0x1c, 0x1b, 0x23, 0x2b, 0x34, 0x33, 0x3b, 0x42, 0x4b, 0x4c};
+    const uint8_t bottom[] = {0x1a, 0x22, 0x21, 0x2a, 0x32, 0x31, 0x3a};
+    KEYS(top, "qwfpgjluy;");
+    KEYS(home, "arstdhneio");
+    KEYS(bottom, "zxcvbkm");
+
+    const uint8_t erase[] = {0x58, 0x58, 0x58, 0xf0, 0x58, 0x66, 0xf0, 0x66, 0x1c};
+    KEYS(erase, "\177\177\177\177a");
+    const uint8_t alt_erase[] = {0x11, 0x58, 0xf0, 0x58, 0x66, 0xf0, 0x66, 0xf0, 0x11};
+    KEYS(alt_erase, "\033\177\033\177");
+    KEYS(shift_repeat, "AAa");
+    KEYS(prefix, "");
+    KEYS(up, "\033OA");
+    KEYS(f1, "\033OP");
     terminal_destroy(&term);
 }
 

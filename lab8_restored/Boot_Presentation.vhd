@@ -4,16 +4,22 @@ use ieee.numeric_std.all;
 -- Independent prevalidated boot glyphs derived from canonical font assets.
 -- Does not touch display memory, SRAM, protocol state, RX or command ACKs.
 entity Boot_Presentation is
-    generic (hold_cycles: natural := 150000000);
+    generic (hold_cycles: natural := 195000000);
     port (clk, reset, pixel_enable, vblank, linked, font_ready, shown : in std_logic;
           x, y : in std_logic_vector(9 downto 0);
           terminal_rgb : in std_logic_vector(11 downto 0);
-          rgb : out std_logic_vector(11 downto 0));
+          terminal_hs_n, terminal_vs_n : in std_logic;
+          rgb : out std_logic_vector(11 downto 0);
+          hs_n, vs_n : out std_logic);
 end entity;
 architecture rtl of Boot_Presentation is
     signal was_linked, overlay_on : std_logic := '0';
     signal hold_ticks: natural range 0 to hold_cycles := 0;
     signal boot_rgb: std_logic_vector(11 downto 0) := x"000";
+    signal terminal_color : std_logic_vector(11 downto 0);
+    signal rom_addr : natural range 0 to 1023;
+    signal bit_index : natural range 0 to 15;
+    signal glyph_on, border_on : std_logic := '0';
     function bitmap(a: natural) return std_logic_vector is
     begin
         case a is
@@ -349,15 +355,15 @@ architecture rtl of Boot_Presentation is
         end case;
     end;
 begin
-    rgb<=boot_rgb when overlay_on='1' else terminal_rgb;
+    rgb<=boot_rgb when overlay_on='1' else terminal_color;
     process(clk)
-        variable px,py,col,line_id,glyph,bitpos: integer;
+        variable px,py,col,line_id,glyph: integer;
         variable right_half: boolean;
-        variable mask: std_logic_vector(15 downto 0);
     begin
         if rising_edge(clk) then
             if reset='1' then
-                was_linked<='0'; overlay_on<='1'; hold_ticks<=0; boot_rgb<=x"000";
+                was_linked<='0'; overlay_on<='1'; hold_ticks<=0;
+                glyph_on<='0'; border_on<='0';
             else
                 was_linked<=linked;
                 if linked='0' then hold_ticks<=0;
@@ -369,7 +375,7 @@ begin
                     else overlay_on<='1'; end if;
                 end if;
                 if pixel_enable='1' then
-                    boot_rgb<=x"000";
+                    glyph_on<='0'; border_on<='0';
                     px:=to_integer(unsigned(x)); py:=to_integer(unsigned(y));
                     col:=px/8; line_id:=-1; glyph:=-1; right_half:=false;
                     if py/16=8 then line_id:=0;
@@ -553,15 +559,33 @@ begin
                         when others => null;
                     end case;
                     if px<640 and py<480 then
-                        if py=108 or py=308 then boot_rgb<=x"0A0"; end if;
+                        if py=108 or py=308 then border_on<='1'; end if;
                         if glyph>=0 then
-                            mask:=bitmap(glyph*16+py mod 16);
-                            bitpos:=15-px mod 8;
-                            if right_half then bitpos:=bitpos-8; end if;
-                            if mask(bitpos)='1' then boot_rgb<=x"5F5"; end if;
+                            glyph_on<='1';
+                            rom_addr<=glyph*16+py mod 16;
+                            if right_half then bit_index<=7-px mod 8;
+                            else bit_index<=15-px mod 8; end if;
                         end if;
                     end if;
                 end if;
+            end if;
+        end if;
+    end process;
+    -- Match the boot bitmap lookup stage on the normal video and sync paths.
+    process(clk)
+        variable mask : std_logic_vector(15 downto 0);
+    begin
+        if rising_edge(clk) then
+            if reset='1' then
+                boot_rgb<=x"000"; terminal_color<=x"000"; hs_n<='1'; vs_n<='1';
+            elsif pixel_enable='1' then
+                boot_rgb<=x"000";
+                if border_on='1' then boot_rgb<=x"0A0"; end if;
+                mask:=bitmap(rom_addr);
+                if glyph_on='1' and mask(bit_index)='1' then boot_rgb<=x"5F5"; end if;
+                terminal_color<=terminal_rgb;
+                hs_n<=terminal_hs_n;
+                vs_n<=terminal_vs_n;
             end if;
         end if;
     end process;

@@ -20,6 +20,11 @@ cd "$build"
 case "${2:-board}" in
     board) ;;
     synthetic)
+        cat >> LAB8.qsf <<'QSF'
+set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
+set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
+set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST ON -section_id eda_simulation
+QSF
         python3 "$source/tools/verify_phase5.py" phase5_scenario.svh \
             --synthetic --patch-synthetic-bdf LAB8.bdf
         touch SYNTHETIC_SIMULATION_ONLY

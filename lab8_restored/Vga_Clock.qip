@@ -1,0 +1,2 @@
+# ALTPLL wrapper for the Cyclone II. ALTPLL is supplied by Quartus II.
+set_global_assignment -name VHDL_FILE [file join $::quartus(qip_path) Vga_Clock.vhd]

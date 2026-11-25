@@ -55,3 +55,35 @@ set_max_delay 20.000 -to [get_ports {FL_ADDR[*] FL_CE_N FL_OE_N FL_WE_N FL_RST_N
 set_max_delay 20.000 -from [get_ports {FL_DQ[*]}]
 set_max_delay 20.000 -to [get_ports {SRAM_ADDR[*] SRAM_CE_N SRAM_OE_N SRAM_WE_N SRAM_LB_N SRAM_UB_N SRAM_DQ[*]}]
 set_max_delay 20.000 -from [get_ports {SRAM_DQ[*]}]
+
+# The pixel clock is 50 MHz * 13 / 10 from Cyclone II ALTPLL.
+derive_pll_clocks
+derive_clock_uncertainty
+
+# Only synchronizer inputs are exempt from synchronous setup/hold.
+# Unrelated video/system crossings remain visible to TimeQuest.
+foreach name {{*U_Row_Queue*|wr_meta[*]} {*U_Row_Queue*|rd_meta[*]} \
+              {*U_Row_Queue*|blank_meta} {*Pixel_Sync*|status_meta[*]}} {
+    set ends [get_registers $name]
+    if {[get_collection_size $ends] > 0} {
+        set_false_path -to $ends
+    }
+}
+# Constrain all Gray-bit routes to less than one period of either launch
+# clock. This also bounds inter-bit skew without cutting stage two timing.
+foreach name {{*U_Row_Queue*|wr_gray[*]} {*U_Row_Queue*|rd_gray[*]}} {
+    set gray_nets [get_nets $name]
+    if {[get_collection_size $gray_nets] > 0} {
+        set_net_delay -max -from $gray_nets 10.000
+    }
+}
+
+# Digital VGA outputs all originate in the pixel domain.
+set_max_delay 10.000 -to [get_ports {VGA_R[*] VGA_G[*] VGA_B[*] VGA_HS VGA_VS}]
+
+# These two flops asynchronously assert reset and synchronously shift out
+# its release. Their asynchronous control is intentionally unclocked.
+set pixel_reset_sync [get_registers {*Pixel_Sync*|reset_meta *Pixel_Sync*|reset_sync}]
+if {[get_collection_size $pixel_reset_sync] == 2} {
+    set_false_path -from [get_clocks board50] -to $pixel_reset_sync
+}

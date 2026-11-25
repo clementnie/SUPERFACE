@@ -9,7 +9,7 @@ architecture bench of boot_presentation_tb is
 begin
     clk<=not clk after 10 ns;
     dut: entity work.Boot_Presentation generic map(100) port map(clk,reset,'1',blank,linked,ready,shown,
-        std_logic_vector(to_unsigned(0,10)),std_logic_vector(to_unsigned(108,10)),x"F00",rgb);
+        std_logic_vector(to_unsigned(0,10)),std_logic_vector(to_unsigned(108,10)),x"F00",'1','1',rgb,open,open);
     process
         procedure boundary is begin
             wait until falling_edge(clk); blank<='1';
