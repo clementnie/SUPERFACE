@@ -14,7 +14,7 @@ with tempfile.TemporaryDirectory(prefix='superface-installer-test.') as tmp:
  for name in ('var/backups','sys/devices/platform/soc/5000800.serial','usr/bin','opt/superface/bin','etc/systemd/system','etc/udev/rules.d'):(osroot/name).mkdir(parents=True,exist_ok=True)
  (osroot/'usr/bin/login').write_text('#!/bin/sh\n');(osroot/'usr/bin/login').chmod(0o755)
  script=(host/'service/install.sh').read_text()
- for prefix in ('/opt/','/etc/','/var/','/sys/','/usr/bin/login','/usr/share/terminfo/'):
+ for prefix in ('/opt/','/etc/','/var/','/sys/','/usr/bin/login','/usr/local/bin','/usr/share/terminfo/'):
   script=script.replace(prefix,str(osroot)+prefix)
  (host/'service/install.sh').write_text(script)
  def command(name,body):
@@ -47,6 +47,30 @@ PY''')
   assert result.returncode==0,result.stdout
  assert (osroot/'etc/sysusers.d/superface.conf').is_file()
  assert (osroot/'etc/systemd/system/superface.service').is_file()
+ assert (osroot/'usr/local/bin/superface-layout').is_file()
  assert len(list((osroot/'var/backups').iterdir()))==1,'Identical rerun should avoid a new backup/restart'
  assert 'Identical installation already running' in result.stdout
- print('PASS actual installer: missing sysusers.d created, first install succeeds, identical active rerun is idempotent')
+ layout_script = osroot/'usr/local/bin/superface-layout'
+ layout_script.write_text(layout_script.read_text().replace('/etc/', str(osroot) + '/etc/'))
+ layout_override = osroot/'etc/systemd/system/superface.service.d/50-keyboard.conf'
+ restarts = r/'restarts'
+ command('systemctl', fr'''case "$1" in
+ show)
+   app='{layout_override}'
+   if [ ! -f "$app" ]; then app='{osroot}/etc/systemd/system/superface.service'; fi
+   sed -n 's/^ExecStart=\(.* --keyboard .*\)$/\1 ;/p' "$app";;
+ daemon-reload) exit 0;;
+ restart) [ "$2" = superface.service ] && echo restart >> '{restarts}';;
+ *) exit 2;;
+esac''')
+ for layout in ('colemak', 'qwerty', 'colemak'):
+  run = subprocess.run([str(layout_script), layout], env=env, check=True, text=True, capture_output=True)
+  assert run.stdout.splitlines()[-1] == layout, run.stdout
+  status = subprocess.check_output([str(layout_script), 'status'], env=env, text=True)
+  assert status.strip() == layout
+ assert restarts.read_text().splitlines() == ['restart'] * 3
+ command('id', 'echo 1000')
+ assert subprocess.run([str(layout_script), 'qwerty'], env=env, capture_output=True).returncode == 1
+ assert subprocess.check_output([str(layout_script), 'status'], env=env, text=True).strip() == 'colemak'
+ print('PASS actual installer: creates missing directories and skips identical active reinstall')
+ print('PASS layout command: both selections persist, restart the service, and report status without root')

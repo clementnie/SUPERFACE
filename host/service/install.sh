@@ -19,6 +19,7 @@ if systemctl is-active --quiet superface.service &&
    cmp -s build/superface /opt/superface/bin/superface &&
    cmp -s build/superface-uart /opt/superface/bin/superface-uart &&
    cmp -s service/check-uart /opt/superface/bin/check-uart &&
+   cmp -s service/superface-layout /usr/local/bin/superface-layout &&
    cmp -s uart/find-tty.sh /opt/superface/bin/find-tty &&
    cmp -s service/superface.service /etc/systemd/system/superface.service &&
    cmp -s service/70-superface-uart.rules /etc/udev/rules.d/70-superface-uart.rules &&
@@ -33,13 +34,13 @@ if fuser /dev/ttyS2 >/dev/null 2>&1; then
     exit 1
 fi
 backup=$(mktemp -d /var/backups/superface-service.XXXXXXXX)
-for path in /opt/superface/bin/superface /opt/superface/bin/superface-uart /opt/superface/bin/find-tty /opt/superface/bin/check-uart /etc/systemd/system/superface.service /etc/udev/rules.d/70-superface-uart.rules /etc/sysusers.d/superface.conf /usr/share/terminfo/s/superface; do
+for path in /usr/local/bin/superface-layout /opt/superface/bin/superface /opt/superface/bin/superface-uart /opt/superface/bin/find-tty /opt/superface/bin/check-uart /etc/systemd/system/superface.service /etc/udev/rules.d/70-superface-uart.rules /etc/sysusers.d/superface.conf /usr/share/terminfo/s/superface; do
     if [ -e "$path" ]; then cp --parents -p "$path" "$backup"; fi
 done
 systemctl is-enabled superface.service > "$backup/previous-enable-state" 2>&1 || :
 # Minimal Manjaro installations can omit sysusers.d until it is first used.
-# Create the three target directories before installing any persistent file.
-for directory in /opt/superface/bin /etc/sysusers.d /etc/udev/rules.d /etc/systemd/system /usr/share/terminfo/s; do
+# Create missing target directories before installing any persistent file.
+for directory in /opt/superface/bin /usr/local/bin /etc/sysusers.d /etc/udev/rules.d /etc/systemd/system /usr/share/terminfo/s; do
     if [ ! -d "$directory" ]; then
         install -d -o root -g root -m 0755 "$directory"
     fi
@@ -49,6 +50,7 @@ systemd-sysusers /etc/sysusers.d/superface.conf
 install -o root -g root -m 0755 build/superface build/superface-uart /opt/superface/bin/
 install -o root -g root -m 0755 uart/find-tty.sh /opt/superface/bin/find-tty
 install -o root -g root -m 0755 service/check-uart /opt/superface/bin/check-uart
+install -o root -g root -m 0755 service/superface-layout /usr/local/bin/superface-layout
 install -o root -g root -m 0644 service/70-superface-uart.rules /etc/udev/rules.d/
 install -o root -g root -m 0644 service/superface.service /etc/systemd/system/
 install -o root -g root -m 0644 "$terminfo/s/superface" /usr/share/terminfo/s/superface

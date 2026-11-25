@@ -1,0 +1,47 @@
+#!/bin/sh
+set -eu
+
+service=superface.service
+directory=/etc/systemd/system/superface.service.d
+override=$directory/50-keyboard.conf
+
+layout_status()
+{
+    exec_start=$(systemctl show -p ExecStart --value "$service")
+    layout=$(printf '%s\n' "$exec_start" | sed -n 's/.* --keyboard \(colemak\|qwerty\) .*/\1/p')
+    case "$layout" in
+        colemak|qwerty) printf '%s\n' "$layout" ;;
+        *) echo 'No supported keyboard layout found in the service command.' >&2; return 1 ;;
+    esac
+}
+
+if [ "$#" -ne 1 ]; then
+    echo 'Usage: superface-layout {colemak|qwerty|status}' >&2
+    exit 2
+fi
+
+case "$1" in
+    status) layout_status; exit ;;
+    colemak|qwerty) requested=$1 ;;
+    *) echo 'Usage: superface-layout {colemak|qwerty|status}' >&2; exit 2 ;;
+esac
+
+if [ "$(id -u)" -ne 0 ]; then
+    echo 'Run layout changes with sudo.' >&2
+    exit 1
+fi
+
+install -d -m 0755 "$directory"
+temporary=$(mktemp "$directory/.keyboard.XXXXXXXX")
+trap 'rm -f -- "$temporary"' EXIT
+printf '[Service]\nExecStart=\nExecStart=/opt/superface/bin/superface --login --keyboard %s --uart /dev/ttyS2\n' "$requested" > "$temporary"
+chmod 0644 "$temporary"
+mv -f -- "$temporary" "$override"
+systemctl daemon-reload
+if [ "$(layout_status)" != "$requested" ]; then
+    echo 'The effective service command has a conflicting keyboard layout.' >&2
+    exit 1
+fi
+echo 'Restarting superface.service and ending the current physical login session.'
+systemctl restart "$service"
+layout_status

@@ -28,7 +28,7 @@ UART2 uses `/dev/ttyS2`, a 48 MHz reference, 3,000,000 baud, 8N1, idle-high sign
 
 ## Display and performance
 
-The Phase 8.1 candidate uses the VESA 1024 × 768 at 60 Hz timing mode. Its 65 MHz Cyclone II PLL drives only VGA. The horizontal timing is 1024 active, 24 front porch, 136 sync and 160 back porch, for 1344 total. The vertical timing is 768 active, 3 front porch, 6 sync and 29 back porch, for 806 total. Both syncs are negative. The published Phase 8 rollback release was physically verified at 640 × 480.
+SUPERFACE 1.1 was verified on a physical VGA monitor at 1024 × 768 at 60 Hz. Its 65 MHz Cyclone II PLL drives only VGA. The horizontal timing is 1024 active, 24 front porch, 136 sync and 160 back porch, for 1344 total. The vertical timing is 768 active, 3 front porch, 6 sync and 29 back porch, for 806 total. Both syncs are negative. The Phase 8 rollback release runs at 640 × 480. [Phase 8 rollback release](https://github.com/clementnie/SUPERFACE/releases/tag/v1.0.0)
 
 The centered 960 × 720 terminal has 32-pixel side margins, 24-pixel top and bottom margins, and 12 × 24 output pixels per cell. Each output coordinate maps to `floor(2 × offset / 3)` on its bitmap axis. It preserves the original 8 × 16 ASCII and terminal graphics, 12 × 12 Chinese bitmaps and two-cell Chinese layout, punctuation, and missing glyphs. The same nearest-neighbor sampling scales the cursor and boot screen. The Phase 8 U9 font image is compatible.
 
@@ -62,37 +62,15 @@ Phase 8 passed a cold boot using EPCS4 on the DE1 and the 48 MHz UART2 boot defa
 
 The production service uses standard Colemak for the physical login prompt and shell. Physical Caps Lock sends Backspace and repeats when held. The physical Backspace key works in both layouts. QWERTY uses conventional Caps Lock.
 
-Switch to QWERTY with a persistent systemd override.
+Run these commands on the Orange Pi. The layout applies to the physical login prompt and shell and persists across boots.
 
 ```sh
-sudo install -d /etc/systemd/system/superface.service.d
-sudo tee /etc/systemd/system/superface.service.d/50-keyboard.conf >/dev/null <<'EOF'
-[Service]
-ExecStart=
-ExecStart=/opt/superface/bin/superface --login --keyboard qwerty --uart /dev/ttyS2
-EOF
-sudo systemctl daemon-reload
+sudo superface-layout colemak
+sudo superface-layout qwerty
+superface-layout status
 ```
 
-Switch to Colemak by restoring the stock service command.
-
-```sh
-sudo rm -f /etc/systemd/system/superface.service.d/50-keyboard.conf
-sudo systemctl daemon-reload
-```
-
-Check the configured layout.
-
-```sh
-systemctl show -p ExecStart --value superface.service |
-  sed -n 's/.*--keyboard \(colemak\|qwerty\).*/\1/p'
-```
-
-Apply the configured layout to both the physical login prompt and shell. **Restarting the service terminates the current physical login session.** Run this command over SSH or the UART0 console if available.
-
-```sh
-sudo systemctl restart superface.service
-```
+Each layout change restarts `superface.service` and **terminates the current physical login session**. Use SSH or the UART0 console when you need the command session to stay open.
 
 ## Licensing
 

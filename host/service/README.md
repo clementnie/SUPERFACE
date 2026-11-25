@@ -6,7 +6,7 @@ From the `host` directory, stage and checksum the files installed by the service
 
 ```sh
 sha256sum build/superface build/superface-uart \
-  service/install.sh service/check-uart service/superface.service \
+  service/install.sh service/check-uart service/superface-layout service/superface.service \
   service/70-superface-uart.rules service/superface.terminfo \
   login/superface.conf uart/find-tty.sh > SERVICE-SHA256SUMS
 sudo sh service/install.sh
@@ -18,37 +18,15 @@ The installer needs `tic`, systemd, udev and PAM's `/usr/bin/login`. Systemd sta
 
 The production service uses standard Colemak for the physical login prompt and shell. Physical Caps Lock sends Backspace and repeats when held. The physical Backspace key works in both layouts. QWERTY uses conventional Caps Lock.
 
-Switch to QWERTY with a persistent systemd override.
+Run these commands on the Orange Pi. The layout applies to the physical login prompt and shell and persists across boots.
 
 ```sh
-sudo install -d /etc/systemd/system/superface.service.d
-sudo tee /etc/systemd/system/superface.service.d/50-keyboard.conf >/dev/null <<'EOF'
-[Service]
-ExecStart=
-ExecStart=/opt/superface/bin/superface --login --keyboard qwerty --uart /dev/ttyS2
-EOF
-sudo systemctl daemon-reload
+sudo superface-layout colemak
+sudo superface-layout qwerty
+superface-layout status
 ```
 
-Switch to Colemak by restoring the stock service command.
-
-```sh
-sudo rm -f /etc/systemd/system/superface.service.d/50-keyboard.conf
-sudo systemctl daemon-reload
-```
-
-Check the configured layout.
-
-```sh
-systemctl show -p ExecStart --value superface.service |
-  sed -n 's/.*--keyboard \(colemak\|qwerty\).*/\1/p'
-```
-
-Apply the configured layout to both the physical login prompt and shell. **Restarting the service terminates the current physical login session.** Run this command over SSH or the UART0 console if available.
-
-```sh
-sudo systemctl restart superface.service
-```
+Each layout change restarts `superface.service` and **terminates the current physical login session**. Use SSH or the UART0 console when you need the command session to stay open.
 
 Confirm a private physical PAM login and run `stty size`. It should print `30 80`. The installer prints the rollback directory. To revert, stop the service, restore the backed-up files to their original paths and remove only the new files absent from that backup, including the terminfo entry if applicable. Reload systemd and the udev rules. Restore the previous enablement state recorded in the backup.
 
