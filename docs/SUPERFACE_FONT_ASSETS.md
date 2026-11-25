@@ -1,5 +1,9 @@
 # SUPERFACE font assets
 
+The [v1.2.0 extended pixel font](SUPERFACE_EXTENDED_FONT.md) is the current bundle. Use its pinned regeneration command. The guide below records how the original and v1.1.0 assets were generated.
+
+## Historical baseline
+
 The font bundle includes **6,727 Chinese glyphs** from a requested repertoire of **6,763 Han scalars**. It is ready for offline use by the Orange Pi and for integration into the DE1 Flash-to-SRAM startup design. The [architecture](SUPERFACE_ARCHITECTURE.md) specifies the display and storage contracts. The [UART protocol](SUPERFACE_PROTOCOL.md) defines compatibility negotiation at 3,000,000 baud.
 
 ## Repertoire and source

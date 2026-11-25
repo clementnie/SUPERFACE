@@ -26,8 +26,7 @@ architecture rtl of Font_Row_Select is
     signal single_cell : boolean;
     signal y : natural range 0 to 15;
 begin
-    single_cell <= font_ok = '1' and unsigned(glyph) >= 16#8000# + wide_glyphs and
-                   unsigned(glyph) < 16#8000# + glyphs;
+    single_cell <= font_ok = '1' and narrow_glyph(unsigned(glyph));
     y <= to_integer(unsigned(local_y));
     need_sram <= '1' when single_cell else need_wide;
     font_row <= local_y when single_cell else wide_row;

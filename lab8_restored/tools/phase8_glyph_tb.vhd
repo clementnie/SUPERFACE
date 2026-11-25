@@ -50,7 +50,21 @@ begin
         neighbor <= x"FFFF";
         wait for 1 ns;
         assert wide = '1' and read_sram = '1' and font_row = "0101" severity failure;
-        report "PASS narrow SRAM row 15, wide address, ASCII question mark and both internal placeholders";
+        if narrow_end < glyphs then
+            glyph <= std_logic_vector(to_unsigned(16#8000# + narrow_end - 1, 16));
+            wait for 1 ns;
+            assert wide = '0' and read_sram = '1' and font_row = "1111" severity failure;
+            glyph <= std_logic_vector(to_unsigned(16#8000# + narrow_end, 16));
+            wait for 1 ns;
+            assert wide = '1' and read_sram = '1' and font_row = "0101" severity failure;
+            glyph <= std_logic_vector(to_unsigned(16#8000# + glyphs - 1, 16));
+            wait for 1 ns;
+            assert wide = '1' and read_sram = '1' and font_row = "0101" severity failure;
+            neighbor <= x"0020";
+            wait for 1 ns;
+            assert wide = '0' and read_sram = '0' severity failure;
+        end if;
+        report "PASS SRAM width boundaries and last glyph, ASCII question mark and both internal placeholders";
         finish;
     end process;
 end architecture;

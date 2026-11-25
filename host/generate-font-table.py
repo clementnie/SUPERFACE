@@ -26,10 +26,13 @@ for line in lines[1:-1]:
 
 ascii_entries = [(code, code) for code in range(0x20, 0x7f)]
 chinese = entries[len(ascii_entries):]
+narrow_first = 0x8000 + meta["chinese_count"]
+narrow_limit = meta.get("narrow_id_limit", 0x8000 + len(chinese))
 if (entries[:len(ascii_entries)] != ascii_entries
         or len(ascii_entries) != meta["ascii_count"]
         or not 1 <= len(chinese) == meta.get("sram_count", meta["chinese_count"]) <= 0x4000
         or meta["first_chinese_id"] != 0x8000
+        or not 0x8000 < narrow_first <= narrow_limit <= 0x8000 + len(chinese)
         or max(g for _, g in chinese) != meta.get("last_sram_id", meta["last_chinese_id"])
         or any(a[0] >= b[0] for a, b in zip(entries, entries[1:]))
         or sorted(g for _, g in chinese) != list(range(0x8000, 0x8000 + len(chinese)))
@@ -42,7 +45,9 @@ identity = ", ".join(f"0x{byte:02x}" for byte in bytes.fromhex(digest[:32]))
 legacy = ", ".join(f"0x{byte:02x}" for byte in bytes.fromhex(
     meta.get("punctuation_mapping_hex", meta["mapping_id_hex"])))
 output.write_text(
-    f"#define WIDE_COUNT {meta['chinese_count']}\n"
+    f"#define LEGACY_WIDE_COUNT {meta['chinese_count']}\n"
+    f"#define NARROW_FIRST 0x{narrow_first:04x}\n"
+    f"#define NARROW_LIMIT 0x{narrow_limit:04x}\n"
     f"const uint8_t sf_legacy_mapping[16] = {{ {legacy} }};\n"
     f"const uint8_t sf_mapping[16] = {{ {identity} }};\n"
     "static const uint32_t chinese_scalars[] = {\n"

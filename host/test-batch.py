@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Exercise the negotiated host display scheduler against an independent PTY peer."""
+import csv
 import os
 from pathlib import Path
 import pty
@@ -11,6 +12,9 @@ import time
 protocol = runpy.run_path(str(Path(__file__).with_name("test-uart-link.py")))
 Peer = protocol["Peer"]
 snapshot = protocol["snapshot"]
+with (Path(__file__).resolve().parents[1] / "assets/fonts/glyph_map.csv").open() as mapping:
+    GLYPHS = {chr(int(row["unicode"][2:], 16)): int(row["glyph_id"], 16)
+              for row in csv.DictReader(mapping)}
 CHILD = """
 import os
 import sys
@@ -20,7 +24,7 @@ os.write(1, b'\\x1b[?25l')
 expected = bytes.fromhex(sys.argv[1])
 first = sys.stdin.buffer.read(len(expected))
 assert first == expected, (first, expected)
-os.write(1, b'\\x1b[1;1H' + first[-1:] + '┌⣿☃😀?'.encode()
+os.write(1, b'\\x1b[1;1H' + first[-1:] + '┌⣿♠♥♦♣祥祌☰𱍐😀?'.encode()
          + b'\\x1b[5;3Htesting\\x1b[6;4Hdone')
 second = os.read(0, 1)
 os.write(1, b'\\x1b[5;3H' + second)
@@ -53,10 +57,11 @@ def check(layout, expected_keys, second_key):
                     peer.ack(first)
                 else:
                     break
-            assert acked and first[0] == 0x16 and first[3][:3] == bytes((0, 0, 7)), first
-            ids = [int.from_bytes(first[3][3+i:5+i], "little") for i in range(0, 21, 3)]
-            assert ids[0] == expected_keys[-1] and ids[1] >= 0x9abc and ids[2] >= 0x9abc
-            assert ids[3:] == [0x7f, 0x80, 0xffff, ord("?")], ids
+            assert acked and first[0] == 0x16 and first[3][:3] == bytes((0, 0, 18)), first
+            ids = [int.from_bytes(first[3][i:i+2], "little") for i in range(3, len(first[3]), 3)]
+            assert ids == ([expected_keys[-1], *(GLYPHS[c] for c in "┌⣿♠♥♦♣"),
+                            GLYPHS["祥"], 0xffff, 0xbfff, 0xffff, GLYPHS["☰"], 0xffff,
+                            0x80, 0xffff, 0x80, 0xffff, ord("?")]), ids
             # A crossed key must be ACKed while a display staging request waits.
             peer.send(0x20, session, 2, b"\x00\x2c")
             assert peer.read() == (0x7f, session, 2, b"\x20\x00")

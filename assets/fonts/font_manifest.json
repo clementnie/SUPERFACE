@@ -22,43 +22,71 @@
       "bytes": 4360,
       "sha256": "86a3ee9495f942f0243f18c103da9faca27adb88142613edb8bb852e56c892c1"
     },
+    "LICENSES/unicode/LICENSE.txt": {
+      "bytes": 1995,
+      "sha256": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96"
+    },
+    "LICENSES/unifont/COPYING": {
+      "bytes": 48615,
+      "sha256": "5a65797606332f2f63057fd81ea0ff35f74043583515bf900ee9b42efa8176a6"
+    },
+    "LICENSES/unifont/COPYRIGHT.txt": {
+      "bytes": 335,
+      "sha256": "3dee456a8295429bb5e6455efe59308c1adb2dd2a9f080ce99879671c4699339"
+    },
+    "LICENSES/unifont/OFL-1.1.txt": {
+      "bytes": 4340,
+      "sha256": "869692af094c57fb7258c57fe26820c759319603321d0ffeb278de3651763ded"
+    },
+    "LICENSES/unifont/README": {
+      "bytes": 29677,
+      "sha256": "0c35716b811d92631b60c92c1ab6a650e5da486f82896c1e87aaef931eb9336a"
+    },
     "chinese_sram.mif": {
-      "bytes": 2158961,
-      "sha256": "116062199165510625f1a0cd8af244596fceca35d88a6c707038cb165c0cac9c"
+      "bytes": 4718678,
+      "sha256": "814db47a5a4cf6fdf1e5c9d52572c65fab8e3102f54a2c942184ca1eb767a6dc"
+    },
+    "extended_coverage.md": {
+      "bytes": 928,
+      "sha256": "a0bd7b49fb881000d6ca0b2953ce0942626080b7724a4bb494f80052f616e993"
+    },
+    "extended_repertoire.csv": {
+      "bytes": 749158,
+      "sha256": "1d3ab83bd2a990b7875224a243c432119017cc70de986757edca306236836527"
     },
     "font_contact_sheet.svg": {
       "bytes": 31547,
       "sha256": "9531df722dafce0ad10fdeb3bf70ae3989924362e8e6759ebf5dbebac9f47ffb"
     },
     "glyph_map.csv": {
-      "bytes": 121473,
-      "sha256": "fa474ce2216d13d42cab9638c2541ab0730aa31283ece0e7e1e0c7b6955eab95"
+      "bytes": 263681,
+      "sha256": "3b16b688374f2ca0af67d2836bc19b16f0bd183214332c6ee47394fcd1cdd282"
     },
     "missing_zh_hans.csv": {
       "bytes": 564,
       "sha256": "6ab46782907935f79112f1d1eb51544ea96fb23f43e338e9766fe28b78e866d8"
     },
     "superface_font.bin": {
-      "bytes": 239936,
-      "sha256": "f453aeb01d875ffd88e73822cb848d4dff87c6c1ca024dbf515460f7bb45fd0f"
+      "bytes": 524352,
+      "sha256": "4c72780461607982f3edf2ca51cf640b12de6679c1a8f8041d774331f4edf478"
     }
   },
   "flash": {
     "crc_algorithm": "CRC-32/ISO-HDLC",
-    "end_byte_exclusive": 239936,
+    "end_byte_exclusive": 524352,
     "file": "superface_font.bin",
     "free_device_bytes_by_capacity": {
-      "1048576": 808640,
-      "4194304": 3954368
+      "1048576": 524224,
+      "4194304": 3669952
     },
-    "free_partition_bytes": 349888,
+    "free_partition_bytes": 65472,
     "header_bytes": 64,
-    "header_crc32_hex": "01b0b08e",
+    "header_crc32_hex": "91de5386",
     "image_alignment_bytes": 0,
-    "image_bytes": 239936,
+    "image_bytes": 524352,
     "partition_end_byte_exclusive": 589824,
-    "payload_bytes": 239872,
-    "payload_crc32_hex": "9abbaf0c",
+    "payload_bytes": 524288,
+    "payload_crc32_hex": "427c2cf6",
     "payload_offset": 64,
     "payload_word_byte_order": "little",
     "start_byte": 0
@@ -72,18 +100,96 @@
     "file": "glyph_map.csv",
     "first_chinese_id": 32768,
     "last_chinese_id": 39611,
-    "last_sram_id": 40263,
-    "punctuation_mapping_hex": "79e2e483b4f5bcb6fa6b8eb7e8722338",
-    "mapping_id_hex": "fa474ce2216d13d42cab9638c2541ab0",
+    "last_sram_id": 49151,
+    "mapping_id_hex": "3b16b688374f2ca0af67d2836bc19b16",
     "missing_ids": {
       "double": 128,
       "single": 127
     },
-    "sha256": "fa474ce2216d13d42cab9638c2541ab0730aa31283ece0e7e1e0c7b6955eab95",
+    "narrow_count": 5242,
+    "narrow_id_limit": 44854,
+    "punctuation_mapping_hex": "79e2e483b4f5bcb6fa6b8eb7e8722338",
+    "sha256": "3b16b688374f2ca0af67d2836bc19b16f0bd183214332c6ee47394fcd1cdd282",
     "space_id": 32,
-    "sram_count": 7496
+    "sram_count": 16384,
+    "total_scalar_count": 16479,
+    "wide_count": 11142
   },
   "repertoire": {
+    "extended_pixel_font": {
+      "added_glyphs": 8888,
+      "artwork_sources": {
+        "Fusion Pixel zh_Hans": 2617,
+        "Fusion Pixel zh_Hans (adapted suit)": 8,
+        "Fusion Pixel zh_Hant": 2695,
+        "GNU Unifont": 3568
+      },
+      "baseline_commit": "e2df6867008e763adefd36874a7e48b0cd87623e",
+      "baseline_payload_sha256": "85ce7ec954005d6b070875cea6f6289b71d165739c413fed92739d5aa6f70deb",
+      "coverage": {
+        "ASCII": {
+          "added": 0,
+          "existing": 95
+        },
+        "Box Drawing, Block Elements and Braille": {
+          "added": 0,
+          "existing": 416
+        },
+        "Currency": {
+          "added": 32,
+          "existing": 5
+        },
+        "Cyrillic": {
+          "added": 377,
+          "existing": 0
+        },
+        "Greek": {
+          "added": 368,
+          "existing": 0
+        },
+        "Han": {
+          "added": 3860,
+          "existing": 6727
+        },
+        "Kana and Bopomofo": {
+          "added": 334,
+          "existing": 0
+        },
+        "Latin and IPA": {
+          "added": 1251,
+          "existing": 91
+        },
+        "Mathematical and scientific notation": {
+          "added": 1062,
+          "existing": 7
+        },
+        "Punctuation and other typography": {
+          "added": 404,
+          "existing": 125
+        },
+        "Terminal games and interface": {
+          "added": 1200,
+          "existing": 125
+        }
+      },
+      "eligible_non_han_without_artwork": [],
+      "han_selection": {
+        "Big5 frequent tier": 310,
+        "Big5 secondary tier": 637,
+        "GB 8105 level 1": 2,
+        "GB 8105 level 2": 163,
+        "GB 8105 level 3": 1000,
+        "Taiwan MOE common characters": 1748
+      },
+      "pinned_inputs_sha256": {
+        "taiwan": "e97e29ed2aa222bbfc12c18a6d96f0270440b1d73f64366d9ad22d7fe9012408",
+        "unicode_license": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96",
+        "unifont": "2bd4e4679757126f48e1bf2c1be40b09aa92162bfedda4683ce5fbc70a2a5972",
+        "unihan": "b8f000df69de7828d21326a2ffea462b04bc7560022989f7cc704f10521ef3e0"
+      },
+      "provenance": "extended_repertoire.csv",
+      "unicode_version": "16.0.0"
+    },
     "extension": {
       "count": 117,
       "first_id": "0x9A47",
@@ -912,15 +1018,15 @@
     "variant": "12px-monospaced-zh_hans"
   },
   "sram": {
-    "allocated_bytes": 239872,
+    "allocated_bytes": 524288,
     "depth_words": 262144,
-    "end_word_exclusive": 119936,
+    "end_word_exclusive": 262144,
     "file": "chinese_sram.mif",
-    "free_bytes": 284416,
+    "free_bytes": 0,
     "glyph_height": 12,
     "glyph_width": 12,
     "leftmost_pixel_bit": 11,
-    "padding_bytes": 106248,
+    "padding_bytes": 239860,
     "reserved_slot_bytes": 0,
     "row_order": "top-to-bottom",
     "slot_bytes": 32,
@@ -930,7 +1036,7 @@
       "leftmost_pixel_bit": 7,
       "width": 8
     },
-    "useful_bytes": 133624,
+    "useful_bytes": 284428,
     "useful_bytes_per_glyph": 18,
     "word_bits": 16,
     "words_per_glyph": 16

@@ -43,6 +43,7 @@ begin
         a:=to_integer(unsigned(sa));
         if rising_edge(sw) and sc='0' then
             assert a<payload_bytes/2 report "SRAM write out of bounds" severity failure;
+            assert a=writes report "SRAM address skipped or wrapped" severity failure;
             assert sl='0' and su='0' and so='1' report "SRAM ownership violation" severity failure;
             mem(a):=dq; writes<=writes+1;
         end if;

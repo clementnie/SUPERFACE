@@ -16,7 +16,7 @@ static const uint8_t palette[16][3] = {
 
 uint16_t sf_chinese_count(void)
 {
-    return WIDE_COUNT;
+    return LEGACY_WIDE_COUNT;
 }
 
 uint16_t sf_font_count(void)
@@ -233,10 +233,11 @@ static void translate_row(Terminal *terminal, int row)
         uint16_t id = ' ';
         if (scalar && scalar != UINT32_MAX && !source.attrs.conceal) {
             id = sf_glyph(scalar);
-            bool wide_glyph = id >= CHINESE_FIRST && id < SYMBOL_FIRST;
-            bool symbol = id >= SYMBOL_FIRST;
-            if (!id || (wide_glyph && (!terminal->font || !wide)) ||
-                (symbol && (!terminal->font || !terminal->extended || wide))) {
+            bool narrow_glyph = id >= NARROW_FIRST && id < NARROW_LIMIT;
+            bool external_glyph = id >= CHINESE_FIRST;
+            if (!id || (external_glyph &&
+                (!terminal->font || (id >= NARROW_FIRST && !terminal->extended) ||
+                 wide == narrow_glyph))) {
                 if (terminal->extended)
                     id = wide ? MISSING_DOUBLE : MISSING_SINGLE;
                 else

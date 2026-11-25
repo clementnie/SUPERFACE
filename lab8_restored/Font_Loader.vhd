@@ -50,6 +50,7 @@ begin
     font_mapping<=wire_mapping when valid='1' else (others=>'0');
     process(clk)
         variable missing, incompatible, reserved_bad: boolean;
+        variable narrow_slot: boolean;
         variable map_header: std_logic_vector(127 downto 0);
         variable expected: unsigned(31 downto 0);
     begin
@@ -91,10 +92,11 @@ begin
                             word<=flash_data & low_byte; word_pos<=pos/2;
                             -- Wide slots contain twelve 12-bit rows and four zero words.
                             -- Single-cell slots contain sixteen 8-bit rows without row padding.
-                            if (pos < wide_glyphs*32 and
+                            narrow_slot := pos >= wide_glyphs*32 and pos < narrow_end*32;
+                            if (not narrow_slot and
                                 (flash_data(7 downto 4)/="0000" or
                                  ((pos/2) mod 16>=12 and (flash_data/=x"00" or low_byte/=x"00")))) or
-                               (pos >= wide_glyphs*32 and flash_data/=x"00") then
+                               (narrow_slot and flash_data/=x"00") then
                                 status<="011"; state<=finished;
                             else state<=write_request; end if;
                         end if;

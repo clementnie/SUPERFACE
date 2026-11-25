@@ -17,7 +17,7 @@ architecture rtl of Cell_Classify is
     signal han, pair, missing : boolean;
 begin
     id <= unsigned(Cell(15 downto 0));
-    han <= id >= 16#8000# and id < 16#8000# + wide_glyphs;
+    han <= wide_glyph(id);
     missing <= id = 16#80#;
     pair <= (han or missing) and unsigned(Col) < 79 and
             Neighbor(15 downto 0) = x"FFFF" and Cell(23 downto 16) = Neighbor(23 downto 16);

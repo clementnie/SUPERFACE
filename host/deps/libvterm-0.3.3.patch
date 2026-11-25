@@ -166,3 +166,17 @@
        DCS_COMMAND,
        /* below here are the "string states" */
        OSC_COMMAND,
+--- a/src/unicode.c
++++ b/src/unicode.c
+@@ -301,6 +301,11 @@
+
+ INTERNAL int vterm_unicode_width(uint32_t codepoint)
+ {
++  /* Unicode 16 makes the complete trigram and monogram/digram sets wide. */
++  if((codepoint >= 0x2630 && codepoint <= 0x2637) ||
++     (codepoint >= 0x268a && codepoint <= 0x268f))
++    return 2;
++
+   if(bisearch(codepoint, fullwidth, sizeof(fullwidth) / sizeof(fullwidth[0]) - 1))
+     return 2;
+

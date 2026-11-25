@@ -176,10 +176,10 @@ begin
                         else current := shadow_data;
                         end if;
                         id := unsigned(current(15 downto 0));
-                        wide := (Font_OK = '1' and id >= 16#8000# and id < 16#8000# + wide_glyphs) or
+                        wide := (Font_OK = '1' and wide_glyph(id)) or
                                 (extended_cells = '1' and id = 16#80#);
                         single := extended_cells = '1' and (id = 16#7f# or
-                                  (Font_OK = '1' and id >= 16#8000# + wide_glyphs and id < 16#8000# + glyphs));
+                                  (Font_OK = '1' and narrow_glyph(id)));
                         if need_tail = '1' then
                             valid := id = 16#ffff# and current(23 downto 16) = lead_color;
                         else
